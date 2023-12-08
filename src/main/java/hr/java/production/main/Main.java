@@ -73,6 +73,10 @@ public class Main {
         System.out.println("Vrijeme izvođenja sa lambdama: " + durationWithLambda.toMillis() + " ms");
         System.out.println("Vrijeme izvođenja bez lambdi: " + durationWithoutLambda.toMillis() + " ms");
 
+        System.out.println("=====================");
+
+        printNumberOfItems(stores);
+
 //        printNumberOfItems(stores);
 //        foodStore.getFoodItems().forEach(System.out::println);
     }
@@ -209,7 +213,7 @@ public class Main {
         System.out.println("Unesite dvije tvornice.");
         for (int i = 0; i < factories.length; i++) {
             System.out.println("Ime " + (i + 1) + ". tvornice: ");
-            String name = scanner.nextLine();
+            String name = Optional.ofNullable(scanner.nextLine()).orElse("TVORNICA");
 
 
             /*
@@ -745,20 +749,20 @@ public class Main {
      * @param stores Polje objekata tipa Store u kojima se provjerava najniža cijena artikla.
      */
     public static void checkingArticlePrice(Store[] stores) {
-        Store storeWithLowestPrice = null;
+        Optional<Store> storeWithLowestPrice = Optional.empty();
         BigDecimal lowestPrice = BigDecimal.valueOf(9999);
         for (Store store : stores) {
             for (Item item : store.getItems()) {
                 BigDecimal price = item.getSellingPrice();
                 if (price.compareTo(lowestPrice) < 0) {
                     lowestPrice = price;
-                    storeWithLowestPrice = store;
+                    storeWithLowestPrice = Optional.of(store);
                 }
             }
         }
-        if (storeWithLowestPrice != null) {
+        if (storeWithLowestPrice.isPresent()) {
             System.out.println("Trgovina koja prodaje najjeftiniji artikl: " +
-                    storeWithLowestPrice.getName());
+                    storeWithLowestPrice.get().getName());
         } else {
             System.out.println("Nema trgovine s najjeftinijim artiklom.");
         }
@@ -770,21 +774,21 @@ public class Main {
      * @param factories Polje objekata tipa Factory koje se provjerava.
      */
     public static void checkingArticleVolume(Factory[] factories) {
-        Factory factoryWithLargestArticleVolume = null;
+        Optional<Factory> factoryWithLargestArticleVolume = Optional.empty();
         BigDecimal largestVolume = BigDecimal.ZERO;
         for (Factory factory : factories) {
             for (Item item : factory.getItems()) {
                 BigDecimal volume = item.calculateVolume();
                 if (volume.compareTo(largestVolume) > 0) {
                     largestVolume = volume;
-                    factoryWithLargestArticleVolume = factory;
+                    factoryWithLargestArticleVolume = Optional.of(factory);
                 }
             }
         }
-        if (factoryWithLargestArticleVolume != null) {
+        if (factoryWithLargestArticleVolume.isPresent()) {
             System.out.println("=====================");
             System.out.println("Tvornica koja proizvodi artikl s najvećim volumenom: " +
-                    factoryWithLargestArticleVolume.getName());
+                    factoryWithLargestArticleVolume.get().getName());
             System.out.println("=====================");
         } else {
             System.out.println("Nema tvornice s najvećim artiklom volumena.");
@@ -799,7 +803,7 @@ public class Main {
      */
     public static void checkingShortestWarrantyLaptop(List<Item> itemsList) {
         int shortestWarrantyMonths = Integer.MAX_VALUE;
-        Laptop shortestWarrantyLaptop = null;
+        Optional<Laptop> shortestWarrantyLaptop = Optional.empty();
 
         for (Item item : itemsList) {
             if (item instanceof Laptop laptop) {
@@ -807,16 +811,16 @@ public class Main {
 
                 if (warrantyMonths < shortestWarrantyMonths) {
                     shortestWarrantyMonths = warrantyMonths;
-                    shortestWarrantyLaptop = laptop;
+                    shortestWarrantyLaptop = Optional.of(laptop);
                 }
             }
         }
 
-        if (shortestWarrantyLaptop != null) {
+        if (shortestWarrantyLaptop.isPresent()) {
             System.out.println("=====================");
             System.out.println("Laptop s najkraćim garantnim rokom:");
-            System.out.println("Ime: " + shortestWarrantyLaptop.getName());
-            System.out.println("Garantni rok u mjesecima: " + shortestWarrantyLaptop.getWarrantyMonths());
+            System.out.println("Ime: " + shortestWarrantyLaptop.get().getName());
+            System.out.println("Garantni rok u mjesecima: " + shortestWarrantyLaptop.get().getWarrantyMonths());
         } else {
             System.out.println("Nema unesenih laptopa ili nema laptopa s garantnim rokom.");
         }
@@ -834,9 +838,9 @@ public class Main {
         Integer maxCalories = Integer.MIN_VALUE;
         Double maxPrice = Double.MIN_VALUE;
         Double minPrice = Double.MAX_VALUE;
-        FoodItem maxCaloriesFood = null;
-        FoodItem maxPriceFood = null;
-        FoodItem minPriceFood = null;
+        Optional<FoodItem> maxCaloriesFood = Optional.empty();
+        Optional<FoodItem> maxPriceFood = Optional.empty();
+        Optional<FoodItem> minPriceFood = Optional.empty();
 
         for (Item item : itemsList) {
             if (item instanceof FoodItem foodItem) {
@@ -845,31 +849,31 @@ public class Main {
 
                 if (calories > maxCalories) {
                     maxCalories = calories;
-                    maxCaloriesFood = foodItem;
+                    maxCaloriesFood = Optional.of(foodItem);
                 }
                 if (price > maxPrice) {
                     maxPrice = price;
-                    maxPriceFood = foodItem;
+                    maxPriceFood = Optional.of(foodItem);
                 }
                 if (price < minPrice) {
                     minPrice = price;
-                    minPriceFood = foodItem;
+                    minPriceFood = Optional.of(foodItem);
                 }
             }
         }
 
-        if (maxCaloriesFood != null) {
+        if (maxCaloriesFood.isPresent()) {
             System.out.println("=====================");
-            System.out.println("Namirnica s najviše kalorija: " + maxCaloriesFood.getName());
+            System.out.println("Namirnica s najviše kalorija: " + maxCaloriesFood.get().getName());
             System.out.println("Broj kalorija: " + maxCalories);
         } else {
             System.out.println("=====================");
             System.out.println("Nema namirnice s najviše kalorija.");
         }
 
-        if (maxPriceFood != null) {
+        if (maxPriceFood.isPresent()) {
             System.out.println();
-            System.out.println("Namirnica s najvećom ukupnom cijenom: " + maxPriceFood.getName());
+            System.out.println("Namirnica s najvećom ukupnom cijenom: " + maxPriceFood.get().getName());
             System.out.println("Ukupna cijena: " + maxPrice);
             System.out.println("Dodatni podatci o artiklu: ");
             System.out.println(maxPriceFood);
@@ -878,8 +882,8 @@ public class Main {
             System.out.println("Nema namirnice s najvećom cijenom.");
         }
 
-        if (minPriceFood != null) {
-            System.out.println("Namirnica s najmanjom ukupnom cijenom: " + minPriceFood.getName());
+        if (minPriceFood.isPresent()) {
+            System.out.println("Namirnica s najmanjom ukupnom cijenom: " + minPriceFood.get().getName());
             System.out.println("Ukupna cijena: " + minPrice);
             System.out.println("Dodatni podatci o artiklu: ");
             System.out.println(minPriceFood);
@@ -890,8 +894,8 @@ public class Main {
     public static void checkingLaptopPrice(List<Item> itemsList) {
         Double maxPrice = Double.MIN_VALUE;
         Double minPrice = Double.MAX_VALUE;
-        Laptop maxPriceLaptop = null;
-        Laptop minPriceLaptop = null;
+        Optional<Laptop> maxPriceLaptop = Optional.empty();
+        Optional<Laptop> minPriceLaptop = Optional.empty();
 
         for (Item item : itemsList) {
             if (item instanceof Laptop laptop) {
@@ -899,19 +903,19 @@ public class Main {
 
                 if (price > maxPrice) {
                     maxPrice = price;
-                    maxPriceLaptop = laptop;
+                    maxPriceLaptop = Optional.of(laptop);
                 }
 
                 if (price < minPrice) {
                     minPrice = price;
-                    minPriceLaptop = laptop;
+                    minPriceLaptop = Optional.of(laptop);
                 }
             }
         }
 
-        if (maxPriceLaptop != null) {
+        if (maxPriceLaptop.isPresent()) {
             System.out.println("=====================");
-            System.out.println("Najskuplji laptop: " + maxPriceLaptop.getName());
+            System.out.println("Najskuplji laptop: " + maxPriceLaptop.get().getName());
             System.out.println("Ukupna cijena: " + maxPrice);
             System.out.println("Dodatni podatci o laptopu: ");
             System.out.println(maxPriceLaptop);
@@ -921,8 +925,8 @@ public class Main {
             System.out.println("Nema dostupnih laptopa.");
         }
 
-        if (minPriceLaptop != null) {
-            System.out.println("Najjeftiniji laptop: " + minPriceLaptop.getName());
+        if (minPriceLaptop.isPresent()) {
+            System.out.println("Najjeftiniji laptop: " + minPriceLaptop.get().getName());
             System.out.println("Ukupna cijena: " + minPrice);
             System.out.println("Dodatni podatci o laptopu: ");
             System.out.println(minPriceLaptop);
@@ -1064,7 +1068,7 @@ public class Main {
         return aboveAverageStores;
     }
 
-    public static void printNumberOfItemsAndItemData(Store[] stores) {
+    public static void printNumberOfItems(Store[] stores) {
         Arrays.stream(stores)
                 .forEach(store -> System.out.println("Broj artikala u trgovini " + store.getName() + "= " + store.getItems().size()));
     }

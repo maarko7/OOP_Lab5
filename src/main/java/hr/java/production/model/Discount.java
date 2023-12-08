@@ -19,4 +19,9 @@ public record Discount(Integer discountAmount) {
     public int hashCode() {
         return Objects.hash(discountAmount);
     }
+
+    @Override
+    public String toString() {
+        return discountAmount + "";
+    }
 }

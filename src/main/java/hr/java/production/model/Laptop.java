@@ -64,8 +64,9 @@ public final class Laptop extends Item implements Technical{
 
     @Override
     public String toString() {
-        return "Laptop{" +
-                "garancija = " + warrantyMonths
+        return "Laptop: " +
+                "garancija = " + warrantyMonths +
+                " mjeseci, "
                 + super.toString();
     }
 }
